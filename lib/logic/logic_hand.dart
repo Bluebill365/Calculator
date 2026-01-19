@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
+import '../coloring/theme.dart';
 
 class LogicHand extends StatefulWidget {
   const LogicHand({super.key});
@@ -8,7 +10,6 @@ class LogicHand extends StatefulWidget {
 }
 
 class _LogicHandState extends State<LogicHand> {
-  @override
   //Variable handling
   double number1 = 0.0;
   double number2 = 0.0;
@@ -16,10 +17,10 @@ class _LogicHandState extends State<LogicHand> {
   var output = "";
   var operator = "";
   var hideout = false;
-  var outputsize = 3.0;
+  var outputSize = 3.0;
 
   onButtonClick(value) {
-    if (value == AC) {
+    if (value == "AC") {
       input = "";
       output = "";
     } else if (value == "<") {
@@ -32,19 +33,19 @@ class _LogicHandState extends State<LogicHand> {
         Parser p = Parser();
         Expression exp = p.parse(userInput);
         ContextModel cm = ContextModel();
-        var finalValue = exp.evaluate(EvaluateType.REAL, cm);
+        var finalValue = exp.evaluate(EvaluationType.REAL, cm);
         output = finalValue.toString();
         if (output.endsWith(".0")) {
           output = output.substring(0, output.length - 2);
         }
         input = output;
         hideout = true;
-        outputsize = 52;
+        outputSize = 52;
       }
     } else {
       input = input + value;
       hideout = false;
-      outputsize = 32;
+      outputSize = 32;
     }
     setState(() {});
   }
@@ -66,11 +67,83 @@ class _LogicHandState extends State<LogicHand> {
                     hideout ? "" : input,
                     style: TextStyle(fontSize: 45, color: Colors.black87),
                   ),
+                  SizedBox(height: 30),
+                  Text(
+                    output,
+                    style: TextStyle(
+                      fontSize: outputSize,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  SizedBox(height: 10),
                 ],
               ),
             ),
           ),
+          Row(
+            children: [
+              buildButton("AC"),
+              buildButton("<"),
+              buildButton("%"),
+              buildButton("/"),
+            ],
+          ),
+          Row(
+            children: [
+              buildButton("7"),
+              buildButton("8"),
+              buildButton("9"),
+              buildButton("x"),
+            ],
+          ),
+          Row(
+            children: [
+              buildButton("4"),
+              buildButton("5"),
+              buildButton("6"),
+              buildButton("-"),
+            ],
+          ),
+          Row(
+            children: [
+              buildButton("1"),
+              buildButton("2"),
+              buildButton("3"),
+              buildButton("+"),
+            ],
+          ),
+          Row(children: [buildButton("0"), buildButton("."), buildButton("=")]),
         ],
+      ),
+    );
+  }
+
+  Widget buildButton(
+    String text, {
+    Color tColor = Colors.white,
+    Color buttonBgColor = const Color(0xFF2D2D2D),
+  }) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(22),
+            backgroundColor: buttonBgColor,
+          ),
+          onPressed: () => onButtonClick(text),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 18,
+              color: tColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ),
     );
   }
